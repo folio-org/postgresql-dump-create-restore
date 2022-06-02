@@ -1,0 +1,86 @@
+plugins {
+    id 'base'
+    id 'org.unbroken-dome.helm' version '1.7.0'
+    id 'org.unbroken-dome.helm-publish' version '1.7.0'
+}
+
+task publish {}
+
+def helmRegistryUrlDefined = false
+if (project.hasProperty("helmRegistryUrl")) {
+    helmRegistryUrlDefined = true
+}
+
+helm {
+    charts {
+        'psql-dump' {
+            sourceDir = file('helm')
+            chartVersion = project.hasProperty("projectVersion") ? project.projectVersion : project.version
+            filtering {
+                if (helmRegistryUrlDefined) {
+                    values.put 'repository', project.helmRegistryUrl
+                }
+
+                project.properties.findAll
+                { key, value ->
+                    key && value && value instanceof String
+                }.each { key, value ->
+                    values.put key, value
+                }
+            }
+        }
+    }
+
+    if (helmRegistryUrlDefined) {
+        repositories {
+            folioRepositoryUrl {
+                url = uri project.helmRegistryUrl
+                credentials {
+                    username = project.helmRegistryUsername
+                    password = project.helmRegistryPassword
+                }
+            }
+        }
+
+        publishing {
+            repositories {
+                artifactory {
+                    url = uri project.helmRegistryUrl
+                    credentials {
+                        username = project.helmRegistryUsername
+                        password = project.helmRegistryPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+build.dependsOn tasks.helmPackage
+publish.dependsOn tasks.helmPublish
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+if (!(project.ext.properties.containsKey("disableHelmSourcesProcessing") && project.ext.disableHelmSourcesProcessing)) {
+    project.afterEvaluate {
+        helm.charts.each { chart ->
+            def chartName = chart.name.capitalize()
+            def task = project.task("processHelm${chartName}ChartSources") {
+                doLast {
+                    def values = project.properties
+                            .findAll { key, value -> key && value && value instanceof String }
+
+                    project.copy {
+                        from chart.sourceDir
+                        into "${buildDir}/helm/charts/${chart.name}"
+                        exclude "*.*"
+                        filter(ReplaceTokens, tokens: values)
+                    }
+                }
+            }
+
+            def originalTask = project.getTasks().findByName("helmCollect${chartName}ChartSources")
+            originalTask.finalizedBy task
+        }
+    }
+}
