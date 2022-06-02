@@ -10,10 +10,7 @@ spec:
         - name: backup-restore-maker
           image: bblayhub/pg-dump-restore-aws-cli:1.0
           #command: ["sleep", "600"]
-          command: ["/bin/bash", "/configmap/pg_dump_restore.sh"]
-          volumeMounts:
-          - name: pg-dump-restore-script-volume
-            mountPath: /configmap
+          command: ["/bin/bash", "/pg_dump_restore.sh"]
           env:
           - name: POSTGRES_USER
             valueFrom:
@@ -51,9 +48,5 @@ spec:
                 name: db-backup-secret
                 key: S3_BACKUP_PATH
       restartPolicy: Never
-      volumes:
-        - name: pg-dump-restore-script-volume
-          configMap:
-            name: pg-dump-restore-script-configmap
   backoffLimit: 4
 
