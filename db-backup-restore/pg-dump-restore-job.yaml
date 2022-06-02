@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-backup-restore
+  namespace: unam
+spec:
+  template:
+    spec:
+      containers:
+        - name: backup-restore-maker
+          image: bblayhub/pg-dump-restore-aws-cli:1.0
+          #command: ["sleep", "600"]
+          command: ["/bin/bash", "/configmap/pg_dump_restore.sh"]
+          volumeMounts:
+          - name: pg-dump-restore-script-volume
+            mountPath: /configmap
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: POSTGRES_DB
+          - name: POSTGRES_HOST
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: POSTGRES_HOST
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: AWS_SECRET_ACCESS_KEY
+          - name: S3_BACKUP_PATH
+            valueFrom:
+              secretKeyRef:
+                name: db-backup-secret
+                key: S3_BACKUP_PATH
+      restartPolicy: Never
+      volumes:
+        - name: pg-dump-restore-script-volume
+          configMap:
+            name: pg-dump-restore-script-configmap
+  backoffLimit: 4
+
