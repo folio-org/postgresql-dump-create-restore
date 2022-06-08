@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.psqlDump.pvc.name }}
+  namespace: {{ .Values.psqlDump.projectNamespace | quote }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.psqlDump.pvc.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.psqlDump.pvc.storageSize }}

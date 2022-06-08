@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-db-backup-restore-job
+  namespace: {{ .Values.psqlDump.projectNamespace | quote }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-backup-restore-container
+          image: {{ .Values.psqlDump.job.image | quote }}
+          command: {{ .Values.psqlDump.job.command }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.psqlDump.job.extraEnvVarsSecret }}
+          volumeMounts:
+            - name: {{ .Values.psqlDump.job.volumeName }}
+              mountPath: {{ .Values.psqlDump.job.mountPath }}
+      volumes:
+        - name: {{ .Values.psqlDump.job.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.psqlDump.pvc.name }}
+      restartPolicy: {{ .Values.psqlDump.job.restartPolicy }}
+  backoffLimit: {{ .Values.psqlDump.job.backoffLimit }}
