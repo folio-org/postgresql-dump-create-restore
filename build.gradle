@@ -1,11 +1,52 @@
 plugins {
     id 'base'
+
+    id "com.bmuschko.docker-remote-api" version "7.4.0"
+
     id 'org.unbroken-dome.helm' version '1.7.0'
     id 'org.unbroken-dome.helm-publish' version '1.7.0'
 }
 
 task publish {}
 
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import org.apache.tools.ant.filters.ReplaceTokens
+
+// docker
+def imagesNames = []
+if (project.hasProperty("dockerRegistryUrl")) {
+    def imageName = "${project.group.replaceAll("\\.", "/")}/${project.name}"
+    def projectVersion = project.hasProperty("projectVersion") ? project.projectVersion : project.version
+    imagesNames = ["${dockerRegistryUrl}/${imageName}:${projectVersion}"]
+    if (project.hasProperty("dockerTags")) {
+        dockerTags = project.dockerTags.split(',').each { tag -> tag.trim() }
+        project.dockerTags.each { tag ->
+            images.add("${dockerRegistryUrl}/${imageName}:${tag}")
+        }
+    }
+
+    docker {
+        registryCredentials {
+            url = dockerRegistryUrl
+            username = dockerRegistryUsername
+            password = dockerRegistryPassword
+        }
+    }
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+    group 'docker'
+    inputDir = file('docker')
+    images = imagesNames
+}
+
+task publishDockerImage(type: DockerPushImage) {
+    group 'docker'
+    images = imagesNames
+}
+
+// helm
 def helmRegistryUrlDefined = false
 if (project.hasProperty("helmRegistryUrl")) {
     helmRegistryUrlDefined = true
@@ -56,11 +97,6 @@ helm {
     }
 }
 
-build.dependsOn tasks.helmPackage
-publish.dependsOn tasks.helmPublish
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
 if (!(project.ext.properties.containsKey("disableHelmSourcesProcessing") && project.ext.disableHelmSourcesProcessing)) {
     project.afterEvaluate {
         helm.charts.each { chart ->
@@ -84,3 +120,10 @@ if (!(project.ext.properties.containsKey("disableHelmSourcesProcessing") && proj
         }
     }
 }
+
+//define task dependencies
+build.dependsOn tasks.helmPackage
+helmPackage.dependsOn tasks.buildDockerImage
+
+publish.dependsOn tasks.helmPublish
+helmPublish.dependsOn tasks.publishDockerImage
