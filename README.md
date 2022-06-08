@@ -1,1 +1,1 @@
-# postgresql-dump-create-restore
+Repo that contains psql-dump-helm chart with used Docker image

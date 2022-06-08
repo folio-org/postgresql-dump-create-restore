@@ -1,14 +1,34 @@
-psqlDump:
-  projectNamespace: "unam"
+psql:
+  jenkinsBuildId: "1"
+  jenkinsStartBuildDateTime: ""
+  jenkinsStartBuildUserName: ""
+  projectNamespace: ""
   job:
-    image: "bblayhub/pg-dump-restore-aws-cli:1.3"
-    extraEnvVarsSecret: "db-backup-secret"
-    volumeName: "db-backup-data"
-    mountPath: "/mnt/ebs-volume"
-    restartPolicy: "Never"
-    backoffLimit: "4"
-    command: "['/bin/bash', '/pg_dump_restore.sh']"
+    backoffLimit: "0"
+    ttlSecondsAfterFinished: "10"
+    activeDeadlineSeconds: "1200"
+    container:
+      image:
+        repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
+        pullPolicy: Always
+        tag: ""
+      envVarsSecret: "s3-postgres-backups-credentials"
+      extraEnvVarsSecret: "db-connect-modules"
+      volumeName: "psql-backup-data"
+      mountPath: "/mnt/ebs-volume"
+      restartPolicy: "Never"
+      command: "'/bin/bash', '/pg_dump_restore.sh'"
+      resources:
+        limits:
+          cpu: "800m"
+          memory: "250Mi"
+        requests:
+          cpu: "500m"
+          memory: "150Mi"
   pvc:
-    name: "db-backup-volume"
+    name: "psql-backup-volume"
     storageClassName: "gp2"
     storageSize: "1Gi"
+
+nameOverride: ""
+fullnameOverride: ""
