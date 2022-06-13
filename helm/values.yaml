@@ -1,12 +1,13 @@
 psqlDump:
-  projectNamespace: "unam"
+  projectNamespace: ""
   job:
-    image: "bblayhub/pg-dump-restore-aws-cli:1.3"
-    extraEnvVarsSecret: "db-backup-secret"
+    image: ""
+    imagePullPolicy: "Always"
+    extraEnvVarsSecret: ""
     volumeName: "db-backup-data"
     mountPath: "/mnt/ebs-volume"
     restartPolicy: "Never"
-    backoffLimit: "4"
+    backoffLimit: "3"
     command: "['/bin/bash', '/pg_dump_restore.sh']"
   pvc:
     name: "db-backup-volume"

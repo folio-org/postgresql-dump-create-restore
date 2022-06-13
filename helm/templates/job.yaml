@@ -9,6 +9,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}-backup-restore-container
           image: {{ .Values.psqlDump.job.image | quote }}
+          imagePullPolicy: {{ .Values.psqlDump.job.imagePullPolicy }}
           command: {{ .Values.psqlDump.job.command }}
           envFrom:
             - secretRef:

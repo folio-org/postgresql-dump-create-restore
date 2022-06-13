@@ -2,4 +2,4 @@ apiVersion: v2
 description: PostgreSQL dump/restore tool with s3 integration
 #home: https://github.com/folio-org/psql-dump-helm/
 name: psql-dump
-version: 1.0.0
+version: 1.0.0-SNAPSHOT
