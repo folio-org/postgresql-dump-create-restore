@@ -3,6 +3,7 @@ psqlDump:
   job:
     image: ""
     imagePullPolicy: "Always"
+    EnvVarsSecret: ""
     extraEnvVarsSecret: ""
     volumeName: "db-backup-data"
     mountPath: "/mnt/ebs-volume"

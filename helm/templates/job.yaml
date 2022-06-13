@@ -13,7 +13,9 @@ spec:
           command: {{ .Values.psqlDump.job.command }}
           envFrom:
             - secretRef:
-                name: {{ .Values.psqlDump.job.extraEnvVarsSecret }}
+                name: {{ .Values.psqlDump.job.EnvVarsSecret }}
+            - secretRef:
+                name: { { .Values.psqlDump.job.extraEnvVarsSecret } }
           volumeMounts:
             - name: {{ .Values.psqlDump.job.volumeName }}
               mountPath: {{ .Values.psqlDump.job.mountPath }}
