@@ -1,27 +1,25 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-db-backup-restore-job
-  namespace: {{ .Values.psqlDump.projectNamespace | quote }}
+  name: {{ include "psql.fullname" . }}
+  namespace: {{ .Values.projectNamespace | quote }}
 spec:
   template:
     spec:
       containers:
-        - name: {{ .Release.Name }}-backup-restore-container
-          image: {{ .Values.psqlDump.job.image | quote }}
-          imagePullPolicy: {{ .Values.psqlDump.job.imagePullPolicy }}
-          command: {{ .Values.psqlDump.job.command }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.job.image.pullPolicy  }}
+          command: {{ .Values.job.command }}
           envFrom:
             - secretRef:
-                name: {{ .Values.psqlDump.job.EnvVarsSecret }}
-            - secretRef:
-                name: { { .Values.psqlDump.job.extraEnvVarsSecret } }
+                name: {{ .Values.job.EnvVarsSecret }}
           volumeMounts:
-            - name: {{ .Values.psqlDump.job.volumeName }}
-              mountPath: {{ .Values.psqlDump.job.mountPath }}
+            - name: {{ .Values.job.volumeName }}
+              mountPath: {{ .Values.job.mountPath }}
       volumes:
-        - name: {{ .Values.psqlDump.job.volumeName }}
+        - name: {{ .Values.job.volumeName }}
           persistentVolumeClaim:
-            claimName: {{ .Values.psqlDump.pvc.name }}
-      restartPolicy: {{ .Values.psqlDump.job.restartPolicy }}
-  backoffLimit: {{ .Values.psqlDump.job.backoffLimit }}
+            claimName: {{ .Values.pvc.name }}
+      restartPolicy: {{ .Values.job.restartPolicy }}
+  backoffLimit: {{ .Values.job.backoffLimit }}
