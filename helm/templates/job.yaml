@@ -2,24 +2,24 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "psql.fullname" . }}
-  namespace: {{ .Values.projectNamespace | quote }}
+  namespace: {{ .Values.psql.projectNamespace | quote }}
 spec:
   template:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.Version }}"
-          imagePullPolicy: {{ .Values.job.image.pullPolicy  }}
-          command: {{ .Values.job.command }}
+          image: "{{ .Values.psql.job.image.repository }}:{{ .Values.psql.job.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.psql.job.image.pullPolicy  }}
+          command: {{ .Values.psql.job.command }}
           envFrom:
             - secretRef:
-                name: {{ .Values.job.EnvVarsSecret }}
+                name: {{ .Values.psql.job.EnvVarsSecret }}
           volumeMounts:
-            - name: {{ .Values.job.volumeName }}
-              mountPath: {{ .Values.job.mountPath }}
+            - name: {{ .Values.psql.job.volumeName }}
+              mountPath: {{ .Values.psql.job.mountPath }}
       volumes:
-        - name: {{ .Values.job.volumeName }}
+        - name: {{ .Values.psql.job.volumeName }}
           persistentVolumeClaim:
-            claimName: {{ .Values.pvc.name }}
-      restartPolicy: {{ .Values.job.restartPolicy }}
-  backoffLimit: {{ .Values.job.backoffLimit }}
+            claimName: {{ .Values.psql.pvc.name }}
+      restartPolicy: {{ .Values.psql.job.restartPolicy }}
+  backoffLimit: {{ .Values.psql.job.backoffLimit }}
