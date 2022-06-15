@@ -2,7 +2,7 @@ psql:
   projectNamespace: ""
   job:
     image:
-      repository: "org/folio/psql-dump-helm"
+      repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
       pullPolicy: Always
       tag: ""
     EnvVarsSecret: "s3-postgres-backups-credentials"
