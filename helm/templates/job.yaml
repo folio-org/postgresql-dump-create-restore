@@ -15,7 +15,7 @@ spec:
             - secretRef:
                 name: {{ .Values.psql.job.envVarsSecret }}
             - secretRef:
-                name: { { .Values.psql.job.extraEnvVarsSecret } }
+                name: {{ .Values.psql.job.extraEnvVarsSecret }}
           volumeMounts:
             - name: {{ .Values.psql.job.volumeName }}
               mountPath: {{ .Values.psql.job.mountPath }}
