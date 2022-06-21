@@ -5,7 +5,8 @@ psql:
       repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
       pullPolicy: Always
       tag: ""
-    EnvVarsSecret: "s3-postgres-backups-credentials"
+    envVarsSecret: "s3-postgres-backups-credentials"
+    extraEnvVarsSecret: "db-connect-modules"
     volumeName: "db-backup-data"
     mountPath: "/mnt/ebs-volume"
     restartPolicy: "Never"
