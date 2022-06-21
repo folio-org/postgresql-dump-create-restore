@@ -11,5 +11,6 @@ echo "AWS s3 cp operation SUCCESSFULLY COMPLETED"
 } ||
 {
   echo "pg_dump operation FAILED (postgres backup aws s3 cp)"
+  exit 1
 }
 
