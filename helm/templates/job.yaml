@@ -4,6 +4,8 @@ metadata:
   name: {{ include "psql.fullname" . }}
   namespace: {{ .Values.psql.projectNamespace | quote }}
 spec:
+  backoffLimit: {{ .Values.psql.job.backoffLimit }}
+  ttlSecondsAfterFinished: 100
   template:
     spec:
       containers:
@@ -24,4 +26,3 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.psql.pvc.name }}
       restartPolicy: {{ .Values.psql.job.restartPolicy }}
-  backoffLimit: {{ .Values.psql.job.backoffLimit }}
