@@ -1,20 +1,23 @@
 psql:
   projectNamespace: ""
   job:
-    image:
-      repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
-      pullPolicy: Always
-      tag: ""
-    envVarsSecret: "s3-postgres-backups-credentials"
-    extraEnvVarsSecret: "db-connect-modules"
-    volumeName: "db-backup-data"
-    mountPath: "/mnt/ebs-volume"
-    restartPolicy: "Never"
-    backoffLimit: "1"
-    command: "['/bin/bash', '/pg_dump_restore.sh_TEST']"
-    nameOverride: ""
-    fullnameOverride: ""
+    backoffLimit: "0"
+    ttlSecondsAfterFinished: "1"
+    container:
+      image:
+        repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
+        pullPolicy: Always
+        tag: ""
+      envVarsSecret: "s3-postgres-backups-credentials"
+      extraEnvVarsSecret: "db-connect-modules"
+      volumeName: "db-backup-data"
+      mountPath: "/mnt/ebs-volume"
+      restartPolicy: "Never"
+      command: "['/bin/bash', '/pg_dump_restore.sh']"
   pvc:
     name: "db-backup-volume"
     storageClassName: "gp2"
     storageSize: "1Gi"
+
+nameOverride: ""
+fullnameOverride: ""

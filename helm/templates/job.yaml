@@ -5,24 +5,24 @@ metadata:
   namespace: {{ .Values.psql.projectNamespace | quote }}
 spec:
   backoffLimit: {{ .Values.psql.job.backoffLimit }}
-  ttlSecondsAfterFinished: 100
+  ttlSecondsAfterFinished: {{ .Values.psql.job.ttlSecondsAfterFinished }}
   template:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.psql.job.image.repository }}:{{ .Values.psql.job.image.tag | default .Chart.Version }}"
-          imagePullPolicy: {{ .Values.psql.job.image.pullPolicy  }}
-          command: {{ .Values.psql.job.command }}
+          image: "{{ .Values.psql.job.container.image.repository }}:{{ .Values.psql.job.container.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.psql.job.container.image.pullPolicy  }}
+          command: {{ .Values.psql.job.container.command }}
           envFrom:
             - secretRef:
-                name: {{ .Values.psql.job.envVarsSecret }}
+                name: {{ .Values.psql.job.container.envVarsSecret }}
             - secretRef:
-                name: {{ .Values.psql.job.extraEnvVarsSecret }}
+                name: {{ .Values.psql.job.container.extraEnvVarsSecret }}
           volumeMounts:
-            - name: {{ .Values.psql.job.volumeName }}
-              mountPath: {{ .Values.psql.job.mountPath }}
+            - name: {{ .Values.psql.job.container.volumeName }}
+              mountPath: {{ .Values.psql.job.container.mountPath }}
       volumes:
-        - name: {{ .Values.psql.job.volumeName }}
+        - name: {{ .Values.psql.job.container.volumeName }}
           persistentVolumeClaim:
             claimName: {{ .Values.psql.pvc.name }}
-      restartPolicy: {{ .Values.psql.job.restartPolicy }}
+      restartPolicy: {{ .Values.psql.job.container.restartPolicy }}

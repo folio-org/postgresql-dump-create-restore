@@ -49,14 +49,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "psql.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "psql.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "psql.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
