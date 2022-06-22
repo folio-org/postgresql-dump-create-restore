@@ -21,6 +21,8 @@ spec:
           volumeMounts:
             - name: {{ .Values.psql.job.container.volumeName }}
               mountPath: {{ .Values.psql.job.container.mountPath }}
+          resources:
+            {{- toYaml .Values.psql.job.container.resources | nindent 12 }}
       volumes:
         - name: {{ .Values.psql.job.container.volumeName }}
           persistentVolumeClaim:

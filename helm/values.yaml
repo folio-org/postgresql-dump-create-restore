@@ -2,7 +2,7 @@ psql:
   projectNamespace: ""
   job:
     backoffLimit: "0"
-    ttlSecondsAfterFinished: "1"
+    ttlSecondsAfterFinished: "120"
     container:
       image:
         repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
@@ -14,6 +14,13 @@ psql:
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
       command: "['/bin/bash', '/pg_dump_restore.sh']"
+      resources:
+        limits:
+          cpu: "800m"
+          memory: "250Mi"
+        requests:
+          cpu: "500m"
+          memory: "150Mi"
   pvc:
     name: "db-backup-volume"
     storageClassName: "gp2"
