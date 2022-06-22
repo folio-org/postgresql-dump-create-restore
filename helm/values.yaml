@@ -11,7 +11,7 @@ psql:
     mountPath: "/mnt/ebs-volume"
     restartPolicy: "Never"
     backoffLimit: "1"
-    command: "['/bin/bash', '/pg_dump_restore.sh']"
+    command: "['/bin/bash', '/pg_dump_restore.sh_TEST']"
     nameOverride: ""
     fullnameOverride: ""
   pvc:
