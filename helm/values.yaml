@@ -5,7 +5,7 @@ psql:
     ttlSecondsAfterFinished: "60"
     container:
       image:
-        repository: "docker.dev.folio.org/org/folio/psql-dump-helm"
+        repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
         pullPolicy: Always
         tag: ""
       envVarsSecret: "s3-postgres-backups-credentials"
