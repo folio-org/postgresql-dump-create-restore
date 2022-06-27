@@ -49,3 +49,10 @@ Selector labels
 app.kubernetes.io/name: {{ include "psql.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+PVC unique name
+*/}}
+{{- define "psql.pvc.uniqueName" -}}
+{{- printf "%s-%s" .Values.psql.pvc.name .Values.psql.jenkinsBuildId -}}
+{{- end }}

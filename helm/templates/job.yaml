@@ -1,18 +1,26 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "psql.fullname" . }}
+  name: {{ template "psql.fullname" . }}
   namespace: {{ .Values.psql.projectNamespace | quote }}
 spec:
   backoffLimit: {{ .Values.psql.job.backoffLimit }}
   ttlSecondsAfterFinished: {{ .Values.psql.job.ttlSecondsAfterFinished }}
+  activeDeadlineSeconds: {{ .Values.psql.job.activeDeadlineSeconds }}
   template:
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.psql.job.container.image.repository }}:{{ .Values.psql.job.container.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.psql.job.container.image.pullPolicy  }}
-          command: {{ .Values.psql.job.container.command }}
+          command: [{{ .Values.psql.job.container.command }}]
+          env:
+            - name: JENKINS_BUILD_ID
+              value: {{ .Values.psql.jenkinsBuildId | quote }}
+            - name: JENKINS_START_BUILD_DATE_TIME
+              value: {{ .Values.psql.jenkinsStartBuildDateTime| quote }}
+            - name: JENKINS_START_BUILD_USERNAME
+              value: {{ .Values.psql.jenkinsStartBuildUserName | quote }}
           envFrom:
             - secretRef:
                 name: {{ .Values.psql.job.container.envVarsSecret }}
@@ -26,5 +34,5 @@ spec:
       volumes:
         - name: {{ .Values.psql.job.container.volumeName }}
           persistentVolumeClaim:
-            claimName: {{ .Values.psql.pvc.name }}
+            claimName: {{ template "psql.pvc.uniqueName" . }}
       restartPolicy: {{ .Values.psql.job.container.restartPolicy }}

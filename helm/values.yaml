@@ -1,8 +1,12 @@
 psql:
+  jenkinsBuildId: "1"
+  jenkinsStartBuildDateTime: ""
+  jenkinsStartBuildUserName: ""
   projectNamespace: ""
   job:
     backoffLimit: "0"
-    ttlSecondsAfterFinished: "60"
+    ttlSecondsAfterFinished: "10"
+    activeDeadlineSeconds: "1200"
     container:
       image:
         repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
@@ -10,10 +14,10 @@ psql:
         tag: ""
       envVarsSecret: "s3-postgres-backups-credentials"
       extraEnvVarsSecret: "db-connect-modules"
-      volumeName: "db-backup-data"
+      volumeName: "psql-backup-data"
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
-      command: "['/bin/bash', '/pg_dump_restore.sh']"
+      command: "'/bin/bash', '/pg_dump_restore.sh'"
       resources:
         limits:
           cpu: "800m"
@@ -22,7 +26,7 @@ psql:
           cpu: "500m"
           memory: "150Mi"
   pvc:
-    name: "db-backup-volume"
+    name: "psql-backup-volume"
     storageClassName: "gp2"
     storageSize: "1Gi"
 
