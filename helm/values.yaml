@@ -17,7 +17,7 @@ psql:
       volumeName: "psql-backup-data"
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
-      command: "'sleep', '300'"
+      command: "'/bin/bash', '/pg_dump_restore.sh'"
       resources:
         limits:
           cpu: "800m"
