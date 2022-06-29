@@ -6,13 +6,17 @@ psql:
   job:
     backoffLimit: "0"
     ttlSecondsAfterFinished: "10"
-    activeDeadlineSeconds: "1200"
+    activeDeadlineSeconds: "1800"
     container:
       image:
         repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
         pullPolicy: Always
-        tag: ""
-      envVarsSecret: "s3-postgres-backups-credentials"
+        tag: "1.0.0-RANCHER-313-20220628124331"
+      # The below secret provided with every project deployment and has value of cluster/project name,
+      # aws s3 bucket name, aws s3 access and secret keys
+      envVarsSecret: "aws-postgres-backups-s3-bucket-credentials"
+      # The below secret provided with every project deployment and give us pg_username,
+      # pg_password, pg_db_name, pg_db_host_name values
       extraEnvVarsSecret: "db-connect-modules"
       volumeName: "psql-backup-data"
       mountPath: "/mnt/ebs-volume"
@@ -28,7 +32,7 @@ psql:
   pvc:
     name: "psql-backup-volume"
     storageClassName: "gp2"
-    storageSize: "1Gi"
+    storageSize: "8Gi"
 
 nameOverride: ""
 fullnameOverride: ""
