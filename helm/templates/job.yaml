@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.psql.job.container.image.repository }}
+          image: "{{ .Values.psql.job.container.image.repository }}:{{ .Values.psql.job.container.image.tag }}"
           imagePullPolicy: {{ .Values.psql.job.container.image.pullPolicy  }}
           command: [{{ .Values.psql.job.container.command }}]
           env:
@@ -23,9 +23,9 @@ spec:
               value: {{ .Values.psql.jenkinsStartBuildUserName | quote }}
           envFrom:
             - secretRef:
-                name: {{ .Values.psql.job.container.envVarsSecret }}
+                name: {{ .Values.psql.job.container.s3CredentialsSecret }}
             - secretRef:
-                name: {{ .Values.psql.job.container.extraEnvVarsSecret }}
+                name: {{ .Values.psql.job.container.dbCredentialsSecret }}
           volumeMounts:
             - name: {{ .Values.psql.job.container.volumeName }}
               mountPath: {{ .Values.psql.job.container.mountPath }}

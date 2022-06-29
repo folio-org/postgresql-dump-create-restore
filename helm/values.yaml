@@ -6,18 +6,22 @@ psql:
   job:
     backoffLimit: "0"
     ttlSecondsAfterFinished: "10"
-    activeDeadlineSeconds: "1800"
+    activeDeadlineSeconds: "3600"
     container:
       image:
         repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
         pullPolicy: Always
         tag: "${chartVersion}"
-      # The below secret provided with every project deployment and has value of cluster/project name,
-      # aws s3 bucket name, aws s3 access and secret keys
-      envVarsSecret: "aws-postgres-backups-s3-bucket-credentials"
-      # The below secret provided with every project deployment and give us pg_username,
-      # pg_password, pg_db_name, pg_db_host_name values
-      extraEnvVarsSecret: "db-connect-modules"
+      # The below secret provided with every project deployment and give us such env variables:
+      # RANCHER_CLUSTER_PROJECT_NAME, AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
+      ##
+      s3CredentialsSecret: "aws-postgres-backups-s3-bucket-credentials"
+
+      # The below secret provided with every project deployment and give us such env variables:
+      # DB_HOST(postgres url of pod in cluster), DB_USERNAME, DB_PASSWORD, DB_DATABASE(db name)
+      ##
+      dbCredentialsSecret: "db-connect-modules"
+
       volumeName: "psql-backup-data"
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
@@ -32,7 +36,7 @@ psql:
   pvc:
     name: "psql-backup-volume"
     storageClassName: "gp2"
-    storageSize: "8Gi"
+    storageSize: "10Gi"
 
 nameOverride: ""
 fullnameOverride: ""
