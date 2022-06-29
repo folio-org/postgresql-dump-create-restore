@@ -11,7 +11,7 @@ psql:
       image:
         repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
         pullPolicy: Always
-        tag: "1.0.0-RANCHER-313-20220628124331"
+        tag: ""
       # The below secret provided with every project deployment and has value of cluster/project name,
       # aws s3 bucket name, aws s3 access and secret keys
       envVarsSecret: "aws-postgres-backups-s3-bucket-credentials"
