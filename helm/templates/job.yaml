@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.psql.job.container.image.repository }}:{{ .Values.psql.job.container.image.tag | default .Chart.Version }}"
+          image: {{ .Values.psql.job.container.image.repository }}
           imagePullPolicy: {{ .Values.psql.job.container.image.pullPolicy  }}
           command: [{{ .Values.psql.job.container.command }}]
           env:
