@@ -2,11 +2,11 @@
 
 (
   set -e
-  export DUMP_FILE=/mnt/ebs-volume/backup_${JENKINS_BUILD_ID}-${JENKINS_START_BUILD_DATE_TIME}-${JENKINS_START_BUILD_USERNAME}
+  export DUMP_FILE=/mnt/ebs-volume/backup_${JENKINS_BUILD_ID}-${JENKINS_START_BUILD_DATE_TIME}-${JENKINS_START_BUILD_USERNAME}.pgdump
   PGPASSWORD=$DB_PASSWORD pg_dump -Fc -d $DB_DATABASE -U $DB_USERNAME -h $DB_HOST -f $DUMP_FILE
-  echo "pg_dump operation SUCCESSFULLY COMPLETED"
+  echo "pg_dump operation SUCCESSFULLY COMPLETED. Path to file is $DUMP_FILE"
   aws s3 cp ${DUMP_FILE} $AWS_BUCKET/$RANCHER_CLUSTER_PROJECT_NAME/
-  echo "AWS s3 cp operation SUCCESSFULLY COMPLETED"
+  echo "AWS s3 cp operation of file $DUMP_FILE SUCCESSFULLY COMPLETED"
 )
 errorCode=$?
 if [ $errorCode -ne 0 ]; then
