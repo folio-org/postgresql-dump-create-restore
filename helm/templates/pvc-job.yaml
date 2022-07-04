@@ -30,7 +30,7 @@ spec:
           command: [{{ .Values.psql.job.container.command }}]
           env:
             - name: JENKINS_DB_BACKUP_NAME
-              value: {{ .Values.psql.jenkinsDbBackupName | quote }}
+              value: {{ template "psql.backupName" . }}
           envFrom:
             - secretRef:
                 name: {{ .Values.psql.job.container.s3CredentialsSecret }}

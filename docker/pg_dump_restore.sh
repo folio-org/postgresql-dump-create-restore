@@ -2,7 +2,7 @@
 
 (
   set -e
-  export DUMP_FILE=/mnt/ebs-volume/${JENKINS_DB_BACKUP_NAME}.pgdump
+  export DUMP_FILE=/mnt/ebs-volume/${JENKINS_DB_BACKUP_NAME}
   PGPASSWORD=$DB_PASSWORD pg_dump -Fc -d $DB_DATABASE -U $DB_USERNAME -h $DB_HOST -f $DUMP_FILE
   echo "pg_dump operation SUCCESSFULLY COMPLETED. Path to file is $DUMP_FILE"
   aws s3 cp ${DUMP_FILE} $AWS_BUCKET/$RANCHER_CLUSTER_PROJECT_NAME/
