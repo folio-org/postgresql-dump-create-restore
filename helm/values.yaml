@@ -1,7 +1,5 @@
 psql:
-  jenkinsBuildId: "1"
-  jenkinsStartBuildDateTime: ""
-  jenkinsStartBuildUserName: ""
+  jenkinsDbBackupName: ""
   projectNamespace: ""
   job:
     backoffLimit: "0"
@@ -15,7 +13,7 @@ psql:
       # The below secret provided with every project deployment and give us such env variables:
       # RANCHER_CLUSTER_PROJECT_NAME, AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
       ##
-      s3CredentialsSecret: "aws-postgres-backups-s3-bucket-credentials"
+      s3CredentialsSecret: "s3-postgres-backups-bucket-credentials"
 
       # The below secret provided with every project deployment and give us such env variables:
       # DB_HOST(postgres url of pod in cluster), DB_USERNAME, DB_PASSWORD, DB_DATABASE(db name)
