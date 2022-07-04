@@ -5,6 +5,9 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/*
+Set default name of backup if install chart without parameter psql.jenkinsDbBackupName
+*/}}
 {{- define "psql.backupName" -}}
 {{- default "backup_default_name.pgdump" .Values.psql.jenkinsDbBackupName | trunc 63 | trimSuffix "-" }}
 {{- end }}
