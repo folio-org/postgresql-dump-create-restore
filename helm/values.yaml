@@ -1,0 +1,40 @@
+psql:
+  jenkinsDbBackupName: ""
+  projectNamespace: ""
+  job:
+    backoffLimit: "0"
+    ttlSecondsAfterFinished: "10"
+    activeDeadlineSeconds: "3600"
+    container:
+      image:
+        repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
+        pullPolicy: Always
+        tag: "${chartVersion}"
+      # The below secret provided with every project deployment and give us such env variables:
+      # RANCHER_CLUSTER_PROJECT_NAME, AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
+      ##
+      s3CredentialsSecret: "s3-postgres-backups-bucket-credentials"
+
+      # The below secret provided with every project deployment and give us such env variables:
+      # DB_HOST(postgres url of pod in cluster), DB_USERNAME, DB_PASSWORD, DB_DATABASE(db name)
+      ##
+      dbCredentialsSecret: "db-connect-modules"
+
+      volumeName: "psql-backup-data"
+      mountPath: "/mnt/ebs-volume"
+      restartPolicy: "Never"
+      command: "'/bin/bash', '/pg_dump_restore.sh'"
+      resources:
+        limits:
+          cpu: "800m"
+          memory: "250Mi"
+        requests:
+          cpu: "500m"
+          memory: "150Mi"
+  pvc:
+    name: "psql-backup-volume"
+    storageClassName: "gp2"
+    storageSize: "10Gi"
+
+nameOverride: ""
+fullnameOverride: ""

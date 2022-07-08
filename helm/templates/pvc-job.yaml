@@ -1,0 +1,48 @@
+{{- $Uuid := uuidv4 -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.psql.pvc.name }}-{{ $Uuid }}
+  namespace: {{ .Values.psql.projectNamespace | quote }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.psql.pvc.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.psql.pvc.storageSize }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "psql.fullname" . }}-{{ $Uuid }}
+  namespace: {{ .Values.psql.projectNamespace | quote }}
+spec:
+  backoffLimit: {{ .Values.psql.job.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.psql.job.ttlSecondsAfterFinished }}
+  activeDeadlineSeconds: {{ .Values.psql.job.activeDeadlineSeconds }}
+  template:
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.psql.job.container.image.repository }}:{{ .Values.psql.job.container.image.tag }}"
+          imagePullPolicy: {{ .Values.psql.job.container.image.pullPolicy  }}
+          command: [{{ .Values.psql.job.container.command }}]
+          env:
+            - name: JENKINS_DB_BACKUP_NAME
+              value: {{ template "psql.backupName" . }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.psql.job.container.s3CredentialsSecret }}
+            - secretRef:
+                name: {{ .Values.psql.job.container.dbCredentialsSecret }}
+          volumeMounts:
+            - name: {{ .Values.psql.job.container.volumeName }}
+              mountPath: {{ .Values.psql.job.container.mountPath }}
+          resources:
+            {{- toYaml .Values.psql.job.container.resources | nindent 12 }}
+      volumes:
+        - name: {{ .Values.psql.job.container.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.psql.pvc.name }}-{{ $Uuid }}
+      restartPolicy: {{ .Values.psql.job.container.restartPolicy }}
