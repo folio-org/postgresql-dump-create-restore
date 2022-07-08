@@ -1,1 +1,5 @@
-Repo that contains psql-dump-helm chart with used Docker image
+# psql-dump-helm
+
+The repo contains psql-dump-helm chart that allow create PostgreSQL DB backup using helm.
+
+---
