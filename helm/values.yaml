@@ -2,7 +2,7 @@ psql:
   jenkinsDbBackupName: "default-backup-1.psql"
   projectNamespace: ""
   job:
-    action: "restore" # There is 2 values, "backup" and "restore"
+    action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
     ttlSecondsAfterFinished: "20"
     activeDeadlineSeconds: "3600"
