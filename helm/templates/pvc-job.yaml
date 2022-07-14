@@ -34,7 +34,7 @@ spec:
             - name: EBS_VOLUME_MOUNT_PATH
               value: {{ .Values.psql.job.container.mountPath }}
             - name: ACTION
-              value: {{ .Values.psql.job.action}}
+              value: {{ .Values.psql.job.action }}
             - name: RANCHER_CLUSTER_PROJECT_NAME
               value: "{{ .Values.psql.clusterName }}/{{ .Values.psql.projectNamespace }}"
           envFrom:
