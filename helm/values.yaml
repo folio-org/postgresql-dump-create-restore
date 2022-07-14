@@ -1,6 +1,7 @@
 psql:
   jenkinsDbBackupName: "default-backup-1.psql"
   projectNamespace: ""
+  clusterName: ""
   job:
     action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"

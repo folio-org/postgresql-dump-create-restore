@@ -35,6 +35,8 @@ spec:
               value: {{ .Values.psql.job.container.mountPath }}
             - name: ACTION
               value: {{ .Values.psql.job.action}}
+            - name: RANCHER_CLUSTER_PROJECT_NAME
+              value: "{{ .Values.psql.clusterName }}/{{ .Values.psql.projectNamespace }}"
           envFrom:
             - secretRef:
                 name: {{ .Values.psql.job.container.s3CredentialsSecret }}
