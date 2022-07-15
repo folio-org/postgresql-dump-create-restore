@@ -5,7 +5,7 @@ psql:
   job:
     action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
-    ttlSecondsAfterFinished: "20"
+    ttlSecondsAfterFinished: "10"
     activeDeadlineSeconds: "3600"
     container:
       image:
