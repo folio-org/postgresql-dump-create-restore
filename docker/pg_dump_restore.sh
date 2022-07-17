@@ -17,9 +17,6 @@ if [ "$ACTION" == backup ]; then
 elif [ "$ACTION" == restore ]; then
   (
     set -e
-    echo "value of AWS_BUCKET is $AWS_BUCKET"
-    echo "value of JENKINS_DB_BACKUP_NAME is $JENKINS_DB_BACKUP_NAME"
-    echo "value of EBS_VOLUME_MOUNT_PATH is $EBS_VOLUME_MOUNT_PATH"
     aws s3 cp $AWS_BUCKET/$JENKINS_DB_BACKUP_NAME $EBS_VOLUME_MOUNT_PATH/$JENKINS_DB_BACKUP_NAME
     echo "AWS s3 cp operation of file $AWS_BUCKET/$JENKINS_DB_BACKUP_NAME to $EBS_VOLUME_MOUNT_PATH path SUCCESSFULLY COMPLETED"
     PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -p $DB_PORT < $EBS_VOLUME_MOUNT_PATH/$JENKINS_DB_BACKUP_NAME > /dev/null
