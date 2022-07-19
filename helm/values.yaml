@@ -1,5 +1,5 @@
 psql:
-  jenkinsDbBackupName: "default-backup-1.psql"
+  jenkinsDbBackupName: "default-backup-name.psql"
   projectNamespace: ""
   clusterName: ""
   job:
@@ -7,6 +7,21 @@ psql:
     backoffLimit: "0"
     ttlSecondsAfterFinished: "10"
     activeDeadlineSeconds: "3600"
+    initContainer:
+      name: "init-chmod-data"
+      image:
+        repository: "bitnami/bitnami-shell"
+        pullPolicy: Always
+        tag: "10-debian-10-r327"
+      resources:
+        limits:
+          cpu: "400m"
+          memory: "512Mi"
+        requests:
+          cpu: "80m"
+          memory: "400Mi"
+      postgresUserGroupId: "1001:1001"
+      # Postgres User:GroupID that needs to have access to mounted volume, so, we grant the permissions using init container
     container:
       image:
         repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
