@@ -46,6 +46,12 @@ task publishDockerImage(type: DockerPushImage) {
     images = imagesNames
 }
 
+task removeDockerImage(type: DockerRemoveImage) {
+    force = true
+    images = imagesNames
+    /*targetImageId buildDockerImage.getImageId()*/
+}
+
 // helm
 def helmRegistryUrlDefined = false
 if (project.hasProperty("helmRegistryUrl")) {
@@ -127,3 +133,4 @@ helmPackage.dependsOn tasks.buildDockerImage
 
 publish.dependsOn tasks.helmPublish
 helmPublish.dependsOn tasks.publishDockerImage
+publishDockerImage.finalizedBy(removeDockerImage)
