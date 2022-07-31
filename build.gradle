@@ -20,6 +20,7 @@ if (project.hasProperty("dockerRegistryUrl")) {
     def imageName = "${project.group.replaceAll("\\.", "/")}/${project.name}"
     def projectVersion = project.hasProperty("projectVersion") ? project.projectVersion : project.version
     imagesNames = ["${dockerRegistryUrl}/${imageName}:${projectVersion}"]
+    def fullImageName = "${dockerRegistryUrl}/${imageName}:${projectVersion}"
     if (project.hasProperty("dockerTags")) {
         dockerTags = project.dockerTags.split(',').each { tag -> tag.trim() }
         project.dockerTags.each { tag ->
@@ -51,7 +52,7 @@ task removeDockerImage(type: DockerRemoveImage) {
     group 'docker'
     force = true
     /*images = imagesNames*/
-    targetImageId imagesNames
+    targetImageId fullImageName
 }
 
 // helm
