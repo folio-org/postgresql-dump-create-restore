@@ -16,11 +16,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 // docker
 def imagesNames = []
+def fullImageName = ""
 if (project.hasProperty("dockerRegistryUrl")) {
     def imageName = "${project.group.replaceAll("\\.", "/")}/${project.name}"
     def projectVersion = project.hasProperty("projectVersion") ? project.projectVersion : project.version
     imagesNames = ["${dockerRegistryUrl}/${imageName}:${projectVersion}"]
-    def fullImageName = "${dockerRegistryUrl}/${imageName}:${projectVersion}"
+    fullImageName = "${dockerRegistryUrl}/${imageName}:${projectVersion}"
     if (project.hasProperty("dockerTags")) {
         dockerTags = project.dockerTags.split(',').each { tag -> tag.trim() }
         project.dockerTags.each { tag ->
