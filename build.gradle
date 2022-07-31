@@ -50,8 +50,8 @@ task publishDockerImage(type: DockerPushImage) {
 task removeDockerImage(type: DockerRemoveImage) {
     group 'docker'
     force = true
-    images = imagesNames
-    /*targetImageId buildDockerImage.getImageId()*/
+    /*images = imagesNames*/
+    targetImageId buildDockerImage.getImageId()
 }
 
 // helm
