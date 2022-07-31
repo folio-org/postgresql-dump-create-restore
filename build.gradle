@@ -48,6 +48,7 @@ task publishDockerImage(type: DockerPushImage) {
 }
 
 task removeDockerImage(type: DockerRemoveImage) {
+    group 'docker'
     force = true
     images = imagesNames
     /*targetImageId buildDockerImage.getImageId()*/
