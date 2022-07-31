@@ -11,6 +11,7 @@ task publish {}
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
 import org.apache.tools.ant.filters.ReplaceTokens
 
 // docker
