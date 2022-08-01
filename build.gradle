@@ -52,7 +52,6 @@ task publishDockerImage(type: DockerPushImage) {
 task removeDockerImage(type: DockerRemoveImage) {
     group 'docker'
     force = true
-    /*images = imagesNames*/
     targetImageId fullImageName
 }
 
@@ -133,9 +132,10 @@ if (!(project.ext.properties.containsKey("disableHelmSourcesProcessing") && proj
 
 //define task dependencies
 build.dependsOn tasks.helmPackage
-helmPackage.dependsOn tasks.buildDockerImage
 
 publish.dependsOn tasks.helmPublish
-helmPublish.dependsOn tasks.publishDockerImage
+helmPublish.dependsOn tasks.removeDockerImage
+removeDockerImage.dependsOn tasks.buildDockerImage
+removeDockerImage.dependsOn tasks.publishDockerImage
 
-//publishDockerImage.finalizedBy(removeDockerImage)
+publishDockerImage.finalizedBy(removeDockerImage)
