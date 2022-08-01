@@ -50,7 +50,6 @@ task publishDockerImage(type: DockerPushImage) {
 }
 
 task removeDockerImage(type: DockerRemoveImage) {
-    group 'docker'
     force = true
     targetImageId fullImageName
 }
