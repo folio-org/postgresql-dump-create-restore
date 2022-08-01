@@ -138,4 +138,4 @@ helmPublish.dependsOn tasks.removeDockerImage
 removeDockerImage.dependsOn tasks.publishDockerImage
 publishDockerImage.dependsOn tasks.buildDockerImage
 
-publishDockerImage.finalizedBy(removeDockerImage)
+//publishDockerImage.finalizedBy(removeDockerImage)
