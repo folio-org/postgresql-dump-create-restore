@@ -135,7 +135,7 @@ build.dependsOn tasks.helmPackage
 
 publish.dependsOn tasks.helmPublish
 helmPublish.dependsOn tasks.removeDockerImage
-removeDockerImage.dependsOn tasks.buildDockerImage
 removeDockerImage.dependsOn tasks.publishDockerImage
+publishDockerImage.dependsOn tasks.buildDockerImage
 
 publishDockerImage.finalizedBy(removeDockerImage)
