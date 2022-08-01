@@ -86,7 +86,8 @@ helm {
                 url = uri project.helmRegistryUrl
                 credentials {
                     username = project.helmRegistryUsername
-                    password = project.helmRegistryPassword
+                    //password = project.helmRegistryPassword
+                    password = "qwerty12345"
                 }
             }
         }
