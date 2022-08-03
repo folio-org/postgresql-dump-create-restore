@@ -1,6 +1,8 @@
 apiVersion: v2
 appVersion: ${chartVersion}
+#appVersion: 1.0.0
 description: PostgreSQL dump/restore tool with s3 integration
 home: https://github.com/folio-org/psql-dump-helm/
 name: psql-dump
 version: ${chartVersion}
+#version: 1.0.0

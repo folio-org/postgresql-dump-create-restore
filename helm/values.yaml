@@ -1,7 +1,10 @@
 psql:
-  jenkinsDbBackupName: "default-backup-name.psql"
+  jenkinsDbBackupName: "08-08-22-default-backup-name.psql"
   projectNamespace: ""
   clusterName: ""
+  tenantBackupModulesForId: ""
+  tenantBackupModulesForAdminUsername: ""
+  tenantBackupModulesForAdminPassword: ""
   job:
     action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
@@ -28,7 +31,7 @@ psql:
         pullPolicy: Always
         tag: "${chartVersion}"
       # The below secret provided with every project deployment and give us such env variables:
-      # RANCHER_CLUSTER_PROJECT_NAME, AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
+      # AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
       ##
       s3CredentialsSecret: "s3-postgres-backups-credentials"
 
@@ -41,6 +44,7 @@ psql:
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
       command: "'/bin/bash', '/pg_dump_restore.sh'"
+      #command: "'sleep', '6000'"
       resources:
         limits:
           cpu: "800m"
