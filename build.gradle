@@ -11,14 +11,17 @@ task publish {}
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
 import org.apache.tools.ant.filters.ReplaceTokens
 
 // docker
 def imagesNames = []
+def fullImageName = ""
 if (project.hasProperty("dockerRegistryUrl")) {
     def imageName = "${project.group.replaceAll("\\.", "/")}/${project.name}"
     def projectVersion = project.hasProperty("projectVersion") ? project.projectVersion : project.version
     imagesNames = ["${dockerRegistryUrl}/${imageName}:${projectVersion}"]
+    fullImageName = "${dockerRegistryUrl}/${imageName}:${projectVersion}"
     if (project.hasProperty("dockerTags")) {
         dockerTags = project.dockerTags.split(',').each { tag -> tag.trim() }
         project.dockerTags.each { tag ->
@@ -44,6 +47,11 @@ task buildDockerImage(type: DockerBuildImage) {
 task publishDockerImage(type: DockerPushImage) {
     group 'docker'
     images = imagesNames
+}
+
+task removeDockerImage(type: DockerRemoveImage) {
+    force = true
+    targetImageId fullImageName
 }
 
 // helm
@@ -123,7 +131,10 @@ if (!(project.ext.properties.containsKey("disableHelmSourcesProcessing") && proj
 
 //define task dependencies
 build.dependsOn tasks.helmPackage
-helmPackage.dependsOn tasks.buildDockerImage
 
 publish.dependsOn tasks.helmPublish
-helmPublish.dependsOn tasks.publishDockerImage
+helmPublish.dependsOn tasks.removeDockerImage
+removeDockerImage.dependsOn tasks.publishDockerImage
+publishDockerImage.dependsOn tasks.buildDockerImage
+
+publishDockerImage.finalizedBy(removeDockerImage)
