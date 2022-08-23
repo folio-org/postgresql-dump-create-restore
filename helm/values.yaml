@@ -1,5 +1,5 @@
 psql:
-  jenkinsDbBackupName: "08-08-22-default-backup-name.psql"
+  jenkinsDbBackupName: ""
   projectNamespace: ""
   clusterName: ""
   tenantBackupModulesForId: ""
@@ -44,7 +44,6 @@ psql:
       mountPath: "/mnt/ebs-volume"
       restartPolicy: "Never"
       command: "'/bin/bash', '/pg_dump_restore.sh'"
-      #command: "'sleep', '6000'"
       resources:
         limits:
           cpu: "800m"
