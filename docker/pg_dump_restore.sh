@@ -15,6 +15,9 @@ if [ "$ACTION" == backup ]; then
     jq '.[] | . += { "action": "enable" }' <<<"$installedModules" | jq '.' -s > $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_install.json
     aws s3 cp $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_install.json $AWS_BUCKET/$RANCHER_CLUSTER_NAME/$RANCHER_PROJECT_NAME/$JENKINS_DB_BACKUP_NAME/
     echo "AWS s3 cp operation of file $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_install.json to s3 $AWS_BUCKET/$RANCHER_CLUSTER_NAME/$RANCHER_PROJECT_NAME/$JENKINS_DB_BACKUP_NAME/ bucket SUCCESSFULLY COMPLETED"
+    jq 'map( select(.id | test("okapi-.*") | not)) | map( select(.id | test("folio_.*") | not)) | map( select(.id | test("edge-.*") | not)) | .[] | . += { "action": "enable" }' <<<"$installedModules" | jq '.' -s > $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_okapi_install.json
+    aws s3 cp $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_okapi_install.json $AWS_BUCKET/$RANCHER_CLUSTER_NAME/$RANCHER_PROJECT_NAME/$JENKINS_DB_BACKUP_NAME/
+    echo "AWS s3 cp operation of file $EBS_VOLUME_MOUNT_PATH/"$JENKINS_DB_BACKUP_NAME"_okapi_install.json to s3 $AWS_BUCKET/$RANCHER_CLUSTER_NAME/$RANCHER_PROJECT_NAME/$JENKINS_DB_BACKUP_NAME/ bucket SUCCESSFULLY COMPLETED"
   )
   errorCode=$?
   if [ $errorCode -ne 0 ]; then
