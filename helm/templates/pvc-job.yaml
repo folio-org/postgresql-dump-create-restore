@@ -35,8 +35,16 @@ spec:
               value: {{ .Values.psql.job.container.mountPath }}
             - name: ACTION
               value: {{ .Values.psql.job.action }}
-            - name: RANCHER_CLUSTER_PROJECT_NAME
-              value: "{{ .Values.psql.clusterName }}/{{ .Values.psql.projectNamespace }}"
+            - name: RANCHER_CLUSTER_NAME
+              value: {{ .Values.psql.clusterName }}
+            - name: RANCHER_PROJECT_NAME
+              value: {{ .Values.psql.projectNamespace }}
+            - name: TENANT
+              value: {{ .Values.psql.tenantBackupModulesForId }}
+            - name: TENANT_ADMIN_USERNAME
+              value: {{ .Values.psql.tenantBackupModulesForAdminUsername }}
+            - name: TENANT_ADMIN_PASSWORD
+              value: {{ .Values.psql.tenantBackupModulesForAdminPassword }}
           envFrom:
             - secretRef:
                 name: {{ .Values.psql.job.container.s3CredentialsSecret }}
