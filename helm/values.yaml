@@ -1,10 +1,12 @@
 psql:
-  jenkinsDbBackupName: ""
+  dbBackupName: ""
   projectNamespace: ""
   clusterName: ""
   tenantBackupModulesForId: ""
   tenantBackupModulesForAdminUsername: ""
   tenantBackupModulesForAdminPassword: ""
+  s3BackupsBucketName: ""
+  s3BackupsBucketDirectory: ""
   job:
     action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
