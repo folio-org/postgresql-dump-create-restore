@@ -32,6 +32,7 @@ elif [ "$ACTION" == restore ]; then
     errorCode=$?
     if [ $errorCode -ne 0 ]; then
       echo "psql restore operation FAILED (postgres restore aws s3 cp failed)"
+      sleep 60
       exit $errorCode
     fi
 fi
