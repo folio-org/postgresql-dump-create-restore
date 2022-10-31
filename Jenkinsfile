@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
 
-@Library('pipelines-shared-library@RANCHER-503') _
+@Library('pipelines-shared-library') _
 
 pipelineHelmChartBuild()
