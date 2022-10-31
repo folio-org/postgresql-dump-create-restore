@@ -10,7 +10,7 @@ if [ "$ACTION" == backup ]; then
     echo "AWS s3 cp operation of file ${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}.psql to s3 ${S3_BACKUPS_BUCKET}/${S3_BACKUPS_DIRECTORY}/${DB_BACKUP_NAME}/ bucket SUCCESSFULLY COMPLETED"
     okapiToken=$(curl -X POST https://${RANCHER_CLUSTER_NAME}-${RANCHER_PROJECT_NAME}-okapi.ci.folio.org/authn/login -H "Content-Type: application/json" -H "X-Okapi-Tenant: ${TENANT}" -d '{"username": "'"${TENANT_ADMIN_USERNAME}"'", "password": "'"${TENANT_ADMIN_PASSWORD}"'"}' | jq '.okapiToken' -r)
     echo "SUCCESSFULLY got okapiToken for tenant - $TENANT, adminUser - $TENANT_ADMIN_USERNAME, environment - https://${RANCHER_CLUSTER_NAME}-${RANCHER_PROJECT_NAME}-okapi.ci.folio.org/authn/login"
-    installedModules=$(curl -X GET https://${RANCHER_CLUSTER_NAME}-${RANCHER_PROJECT_NAME}-okapi.ci.folio.org/_/proxy/tenants/diku/modules  -H "Content-Type: application/json" -H "X-Okapi-Tenant: ${TENANT}" -H "X-Okapi-Token: ${okapiToken}")
+    installedModules=$(curl -X GET https://${RANCHER_CLUSTER_NAME}-${RANCHER_PROJECT_NAME}-okapi.ci.folio.org/_/proxy/tenants/${TENANT}/modules  -H "Content-Type: application/json" -H "X-Okapi-Tenant: ${TENANT}" -H "X-Okapi-Token: ${okapiToken}")
     echo "SUCCESSFULLY got list of installedModules for tenant - $TENANT, adminUser - $TENANT_ADMIN_USERNAME, environment - https://${RANCHER_CLUSTER_NAME}-${RANCHER_PROJECT_NAME}-okapi.ci.folio.org/authn/login"
     jq '.[] | . += { "action": "enable" }' <<<"$installedModules" | jq '.' -s > "${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}_install.json"
     aws s3 cp "${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}_install.json" "${S3_BACKUPS_BUCKET}/${S3_BACKUPS_DIRECTORY}/${DB_BACKUP_NAME}/"
