@@ -15,9 +15,6 @@ if [ "$ACTION" == backup ]; then
     jq '.[] | . += { "action": "enable" }' <<<"$installedModules" | jq '.' -s > $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_install.json
     aws s3 cp $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_install.json $S3_BACKUPS_BUCKET/$S3_BACKUPS_DIRECTORY/$DB_BACKUP_NAME/
     echo "AWS s3 cp operation of file $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_install.json to s3 $S3_BACKUPS_BUCKET/$S3_BACKUPS_DIRECTORY/$DB_BACKUP_NAME/ bucket SUCCESSFULLY COMPLETED"
-    jq 'map( select(.id | test("okapi-.*") | not)) | map( select(.id | test("folio_.*") | not)) | map( select(.id | test("edge-.*") | not)) | .[] | . += { "action": "enable" }' <<<"$installedModules" | jq '.' -s > $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_okapi_install.json
-    aws s3 cp $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_okapi_install.json $S3_BACKUPS_BUCKET/$S3_BACKUPS_DIRECTORY/$DB_BACKUP_NAME/
-    echo "AWS s3 cp operation of file $EBS_VOLUME_MOUNT_PATH/"$DB_BACKUP_NAME"_okapi_install.json to s3 $S3_BACKUPS_BUCKET/$RANCHER_CLUSTER_NAME/$RANCHER_PROJECT_NAME/$DB_BACKUP_NAME/ bucket SUCCESSFULLY COMPLETED"
   )
   errorCode=$?
   if [ $errorCode -ne 0 ]; then
@@ -27,10 +24,10 @@ if [ "$ACTION" == backup ]; then
 elif [ "$ACTION" == restore ]; then
   (
     set -e
-    aws s3 cp "$S3_BACKUPS_BUCKET/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql" "$EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql"
-    echo "AWS s3 cp operation of file $S3_BACKUPS_BUCKET/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql to $EBS_VOLUME_MOUNT_PATH path SUCCESSFULLY COMPLETED"
-    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -p $DB_PORT < "$EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql" > /dev/null
-    echo "psql restore operation SUCCESSFULLY COMPLETED. Path to file is $EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql"
+    aws s3 cp "$S3_BACKUPS_BUCKET/$S3_BACKUPS_DIRECTORY/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql" "$EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME.psql"
+    echo "AWS s3 cp operation of file $S3_BACKUPS_BUCKET/$S3_BACKUPS_DIRECTORY/$DB_BACKUP_NAME/$DB_BACKUP_NAME.psql to $EBS_VOLUME_MOUNT_PATH path SUCCESSFULLY COMPLETED"
+    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -p $DB_PORT < "$EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME.psql" > /dev/null
+    echo "psql restore operation SUCCESSFULLY COMPLETED. Path to file is $EBS_VOLUME_MOUNT_PATH/$DB_BACKUP_NAME.psql"
     )
     errorCode=$?
     if [ $errorCode -ne 0 ]; then
