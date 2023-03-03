@@ -49,6 +49,22 @@ spec:
               value: {{ .Values.psql.s3BackupsBucketName }}
             - name: S3_BACKUPS_DIRECTORY
               value: {{ .Values.psql.s3BackupsBucketDirectory }}
+            - name: TEMPORARY_RDS_PASSWORD
+              value: {{ .Values.rds.password }}
+            - name: TEMPORARY_RDS_HOST
+              value: {{ .Values.rds.host }}
+            - name: TEMPORARY_RDS_USERNAME
+              value: {{ .Values.rds.user }}
+            - name: TEMPORARY_RDS_PORT
+              value: {{ .Values.rds.port }}
+            - name: TEMPORARY_RDS_DATABASE
+              value: {{ .Values.rds.database }}
+            {{- if ne .Values.rds.aws_access_key "1" }}
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.rds.aws_access_key }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.rds.aws_secret_key }}
+            {{- end }}
           envFrom:
             - secretRef:
                 name: {{ .Values.psql.job.container.s3CredentialsSecret }}

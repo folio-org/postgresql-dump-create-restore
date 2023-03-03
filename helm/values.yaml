@@ -10,8 +10,8 @@ psql:
   job:
     action: "backup" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
-    ttlSecondsAfterFinished: "10"
-    activeDeadlineSeconds: "3600"
+    ttlSecondsAfterFinished: "2000"
+    activeDeadlineSeconds: "20000"
     initContainer:
       name: "init-chmod-data"
       image:
@@ -48,15 +48,24 @@ psql:
       command: "'/bin/bash', '/pg_dump_restore.sh'"
       resources:
         limits:
-          cpu: "800m"
-          memory: "250Mi"
+          cpu: "1"
+          memory: "2Gi"
         requests:
-          cpu: "500m"
-          memory: "150Mi"
+          cpu: "0.5"
+          memory: "1Gi"
   pvc:
     name: "psql-backup-volume"
     storageClassName: "gp2"
-    storageSize: "10Gi"
+    storageSize: "300Gi"
 
 nameOverride: ""
 fullnameOverride: ""
+
+rds:
+  host: ""
+  user: ""
+  password: ""
+  port: "5432"
+  database: ""
+  aws_access_key: "1"
+  aws_secret_key: "1"
