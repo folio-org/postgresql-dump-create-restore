@@ -73,15 +73,12 @@ elif [ "$ACTION" == rds_restore ]; then
     PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -p $DB_PORT < "${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}-globals.psql" >> "${EBS_VOLUME_MOUNT_PATH}/globals-import.log"
     #schema-only
     PGPASSWORD=$DB_PASSWORD pg_restore -j 5 -Fd -vvv -h $DB_HOST -U $DB_USERNAME -p $DB_PORT -d "${TEMPORARY_RDS_DATABASE}" "${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}-dir" >> "${EBS_VOLUME_MOUNT_PATH}/import.log"
-    #data-only
-    PGPASSWORD=$DB_PASSWORD pg_restore -j 5 -Fd -vvv -a -h $DB_HOST -U $DB_USERNAME -p $DB_PORT -d "${TEMPORARY_RDS_DATABASE}" "${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}-dir" >> "${EBS_VOLUME_MOUNT_PATH}/data-import.log"
     echo "psql restore operation SUCCESSFULLY COMPLETED. Path to file is ${EBS_VOLUME_MOUNT_PATH}/${DB_BACKUP_NAME}.psql"
 
     )
   errorCode=$?
   if [ $errorCode -ne 0 ]; then
     echo "pg_dump operation FAILED (postgres backup aws s3 cp failed)"
-    exit $errorCode
   fi
 fi
 
