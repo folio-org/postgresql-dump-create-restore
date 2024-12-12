@@ -1,4 +1,4 @@
-FROM bitnami/postgresql:16.6.0
+FROM docker.io/bitnami/postgresql:16.6.0
 
 USER root
 
