@@ -1,5 +1,6 @@
 psql:
   dbBackupName: ""
+  dbBackupData: ""
   projectNamespace: ""
   clusterName: ""
   tenantBackupModulesForId: ""
@@ -8,16 +9,16 @@ psql:
   s3BackupsBucketName: ""
   s3BackupsBucketDirectory: ""
   job:
-    action: "backup" # There is 2 values, "backup" and "restore"
+    action: "restore" # There is 2 values, "backup" and "restore"
     backoffLimit: "0"
     ttlSecondsAfterFinished: "10"
-    activeDeadlineSeconds: "3600"
+    activeDeadlineSeconds: "18000"
     initContainer:
       name: "init-chmod-data"
       image:
-        repository: "bitnami/bitnami-shell"
+        repository: "public.ecr.aws/bitnami/bitnami-shell"
         pullPolicy: Always
-        tag: "10-debian-10-r327"
+        tag: "11-debian-11-r114"
       resources:
         limits:
           cpu: "400m"
@@ -29,9 +30,9 @@ psql:
       # Postgres User:GroupID that needs to have access to mounted volume, so, we grant the permissions using init container
     container:
       image:
-        repository: "docker-folio.dev.folio.org/org/folio/psql-dump-helm"
+        repository: "732722833398.dkr.ecr.us-west-2.amazonaws.com/psql-restore"
         pullPolicy: Always
-        tag: "${chartVersion}"
+        tag: "latest"
       # The below secret provided with every project deployment and give us such env variables:
       # AWS_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY that we use to do aws s3 cp operation
       ##
@@ -40,23 +41,23 @@ psql:
       # The below secret provided with every project deployment and give us such env variables:
       # DB_HOST(postgres url of pod in cluster), DB_USERNAME, DB_PASSWORD, DB_DATABASE(db name)
       ##
-      dbCredentialsSecret: "db-connect-modules"
+      dbCredentialsSecret: "db-credentials"
 
       volumeName: "psql-backup-data"
-      mountPath: "/mnt/ebs-volume"
+      mountPath: "/tmp/ebs-volume"
       restartPolicy: "Never"
       command: "'/bin/bash', '/pg_dump_restore.sh'"
       resources:
         limits:
-          cpu: "800m"
-          memory: "250Mi"
+          cpu: "1024m"
+          memory: "2048Mi"
         requests:
           cpu: "500m"
-          memory: "150Mi"
+          memory: "1024Mi"
   pvc:
     name: "psql-backup-volume"
     storageClassName: "gp2"
-    storageSize: "10Gi"
+    storageSize: "100Gi"
 
 nameOverride: ""
 fullnameOverride: ""

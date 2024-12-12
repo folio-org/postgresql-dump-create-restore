@@ -31,6 +31,8 @@ spec:
           env:
             - name: DB_BACKUP_NAME
               value: {{ .Values.psql.dbBackupName }}
+            - name: DB_BACKUP_DATA
+              value: {{ .Values.psql.dbBackupData }}  
             - name: EBS_VOLUME_MOUNT_PATH
               value: {{ .Values.psql.job.container.mountPath }}
             - name: ACTION
@@ -68,12 +70,16 @@ spec:
             - /bin/sh
             - -ec
             - |
-              chown {{ .Values.psql.job.initContainer.postgresUserGroupId }} {{ .Values.psql.job.container.mountPath }}
+              id -u; chown -R 1001:1001 /tmp/ebs-volume
           volumeMounts:
             - name: {{ .Values.psql.job.container.volumeName }}
               mountPath: {{ .Values.psql.job.container.mountPath }}
           resources:
             {{- toYaml .Values.psql.job.initContainer.resources | nindent 12 }}
+          securityContext:
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0  
       volumes:
         - name: {{ .Values.psql.job.container.volumeName }}
           persistentVolumeClaim:
