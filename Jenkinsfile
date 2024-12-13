@@ -1,5 +1,5 @@
-#!/usr/bin/env groovy
+// #!/usr/bin/env groovy
 
-@Library('pipelines-shared-library') _
+// @Library('pipelines-shared-library') _
 
-pipelineHelmChartBuild()
+// pipelineHelmChartBuild()
